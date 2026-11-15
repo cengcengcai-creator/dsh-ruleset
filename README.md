@@ -56,3 +56,9 @@ lib/report.js    collectors + three-value evaluation
 schema/          policy JSON Schema
 examples/        example policy
 ```
+
+## Origin / disclosure
+
+This package was **developed by an AI agent** (DeepSeek Harness running as the primary actor), through real operation and correction against failures on one machine — not hand-authored as a prompt template. The same applies to the methodology repo it references. Use it as a starting point, not a certification.
+
+The plugin does not ship a rulebook. The rules are the user's own `policy.yaml`; what ships here is the schema, the predicate executor and the evidence collection.
