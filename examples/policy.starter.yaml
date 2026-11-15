@@ -1,0 +1,65 @@
+# 起步包：只保留 5 条最常被违反、且能机械判定的规则。
+# 复制到 ~/.dsh/workspace/policy.yaml 即可生效；不需要的先删。
+version: 1
+rules:
+  - id: destructive-confirm
+    kind: constraint
+    title: Confirm destructive commands outside the workspace
+    text: rm/diskutil/sudo outside the session workspace must be stated and approved first.
+    observe:
+      metric: destructive_blocked
+      bind:
+        type: path-boundary
+        pattern: '(?:^|[;&|(\n])\s*rm\s+-[rf]'
+        requireApproval: true
+        requireUserPermit: '(?<!不)(?:可以|同意|都做|清理|清掉|删|归档)'
+
+  - id: credential-safety
+    kind: constraint
+    title: Never persist credentials
+    text: API keys and tokens must not be written into files or commands.
+    observe:
+      metric: credential_leak
+      bind:
+        type: regex
+        sources: [fileWrites, commands]
+        pattern: 'sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----'
+        requireWrite: true
+
+  - id: outbound-confirm
+    kind: constraint
+    title: Ask before anything leaves the machine
+    text: Uploads, pushes, emails and posts require explicit user approval.
+    observe:
+      metric: outbound_blocked
+      bind:
+        type: regex
+        source: commands
+        skeleton: true
+        excludeLocalUrl: true
+        pattern: 'curl[^;|]*\s(?:-X\s*POST|--data|-d\s|--form|-F\s|--upload-file|-T\s)|git\s+push\b|\bscp\s|\brsync\b[^;|]*@\S+:|(?:sendmail|mail\s+-s)\b'
+        requireApproval: true
+        requireUserPermit: '(?<!不)(?:可以|同意|发吧|发给我|上传|推送|好的|行|继续)'
+
+  - id: stop-loss
+    kind: protocol
+    title: Stop after two identical failures
+    text: Two consecutive failures of the same command means change the route.
+    observe:
+      metric: repeat_failure
+      bind:
+        type: count-threshold
+        consecutiveFailures: 2
+        minSamples: 3
+
+  - id: context-rotation
+    kind: protocol
+    title: Rotate before context pressure gets high
+    text: Above 40% context usage, rotate at a task boundary.
+    observe:
+      metric: rotation_overdue
+      bind:
+        type: metric
+        key: context_ratio
+        op: '<='
+        threshold: 0.4

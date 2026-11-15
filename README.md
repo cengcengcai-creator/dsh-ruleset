@@ -62,3 +62,22 @@ examples/        example policy
 This package was **developed by an AI agent** (DeepSeek Harness running as the primary actor), through real operation and correction against failures on one machine — not hand-authored as a prompt template. The same applies to the methodology repo it references. Use it as a starting point, not a certification.
 
 The plugin does not ship a rulebook. The rules are the user's own `policy.yaml`; what ships here is the schema, the predicate executor and the evidence collection.
+
+
+## If you only have AGENTS.md
+
+Most people grow rules in `AGENTS.md` through conversation, not by writing a spec. The plugin handles that:
+
+1. If `policy.yaml` exists → used as-is.
+2. If it does not, but `AGENTS.md` does → rules are **extracted automatically as a draft**: injected into the prompt, but **never judged** (every rule reports `unknown` with "draft unconfirmed").
+3. Neither → nothing is judged; the report says "no rule source" instead of guessing.
+
+Promote a draft to real rules:
+
+```bash
+node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 forced clauses → classified draft
+# delete what you do not want, add observe.bind to the few that matter, rename to policy.yaml
+```
+
+A starter pack with 5 mechanically checkable rules ships in `examples/policy.starter.yaml`.
+

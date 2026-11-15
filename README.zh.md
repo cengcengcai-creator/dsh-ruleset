@@ -69,3 +69,22 @@ lib/report.js    三值判定与渲染
 本包由 **AI agent（DeepSeek Harness 作为主要执行者）开发**：在本机真实运行中迭代、按失败纠正，而不是人工手写的提示词模板。它引用的方法论仓库同样如此。请把它当成起点，而不是认证。
 
 插件不内置规则手册。规则来自用户自己的 `policy.yaml`；这里提供的是 schema、谓词执行器和证据采集。
+
+
+## 只有 AGENTS.md 也能用
+
+多数人的规则是在对话里慢慢攒进 `AGENTS.md` 的，不是按工程规范写的。插件按三种情况处理：
+
+1. 有 `policy.yaml` → 直接用它
+2. 没有，但有 `AGENTS.md` → 自动抽取成**草稿**：注入提示词，但**不判定**（每条都报 unknown，注明“草稿未确认”）
+3. 两者都没有 → 什么都不判，报告明确写“无规则来源”，不猜
+
+把草稿升级成真规则：
+
+```bash
+node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 条强制句 → 分类草稿
+# 删掉不要的，给关键的几条补上 observe.bind，改名为 policy.yaml
+```
+
+起步包在 `examples/policy.starter.yaml`（5 条最常被违反、且能机械判的规则）。
+
