@@ -93,3 +93,8 @@ node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 条强制句 → 分
 - 插件**从不写** `AGENTS.md`、`policy.yaml` 或任何用户文件，全部在调用时只读。
 - 卸载后提示词原样恢复：注册走 `ctx.effect`，随插件一起 dispose。
 - 注入与 `AGENTS.md` 去重：规则文本若已出现在 AGENTS.md 里，就**不再重复注入**（报告显示 `注入 N 条 / 跳过 M 条`）；规则本身就来自 AGENTS.md 时，注入层自动关闭。
+
+## 工具
+
+- `observe_report` — 输出最近 N 小时的三值报告，同时写一份 `.ruleset/report.json`（插件自有状态，不是用户文件），供 UI 或外部读取。
+- `ruleset_init` — 仅在你明确要求时：把 `AGENTS.md` 抽取成 `.ruleset/policy.draft.yaml`。永不触碰正式 `policy.yaml`；草稿已存在时需 `overwrite: true` 才覆盖。

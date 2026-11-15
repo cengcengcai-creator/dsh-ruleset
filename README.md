@@ -86,3 +86,8 @@ A starter pack with 5 mechanically checkable rules ships in `examples/policy.sta
 - The plugin **never writes** to `AGENTS.md`, `policy.yaml`, or any user file. Everything is read at call time.
 - Uninstalling restores the prompt exactly as it was: registration goes through `ctx.effect`, so it disposes with the plugin.
 - Injection dedupes against `AGENTS.md`: if a rule's text already appears there, it is **not injected again** (reports show `N injected / M skipped`), and when the rules themselves came from `AGENTS.md` the inject layer turns itself off.
+
+## Tools
+
+- `observe_report` — three-value report over the last N hours; also writes `.ruleset/report.json` (plugin state, not a user file) for UIs or external readers.
+- `ruleset_init` — on explicit request only: extracts `AGENTS.md` into `.ruleset/policy.draft.yaml`. It never touches the real `policy.yaml` and refuses to overwrite an existing draft without `overwrite: true`.
