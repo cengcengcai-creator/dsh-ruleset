@@ -33,6 +33,10 @@
 ## 装法
 
 ```bash
+# GitHub 直装（现在可用）
+dsh plugin --profile web add github:cengcengcai-creator/dsh-ruleset
+
+# npm（发布后可用）
 dsh plugin --profile web add dsh-ruleset
 ```
 
