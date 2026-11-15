@@ -88,3 +88,8 @@ node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 条强制句 → 分
 
 起步包在 `examples/policy.starter.yaml`（5 条最常被违反、且能机械判的规则）。
 
+## 可插拔：不碰用户文件
+
+- 插件**从不写** `AGENTS.md`、`policy.yaml` 或任何用户文件，全部在调用时只读。
+- 卸载后提示词原样恢复：注册走 `ctx.effect`，随插件一起 dispose。
+- 注入与 `AGENTS.md` 去重：规则文本若已出现在 AGENTS.md 里，就**不再重复注入**（报告显示 `注入 N 条 / 跳过 M 条`）；规则本身就来自 AGENTS.md 时，注入层自动关闭。

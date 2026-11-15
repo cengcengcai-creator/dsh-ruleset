@@ -81,3 +81,8 @@ node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 forced clauses → c
 
 A starter pack with 5 mechanically checkable rules ships in `examples/policy.starter.yaml`.
 
+## Pluggable by design
+
+- The plugin **never writes** to `AGENTS.md`, `policy.yaml`, or any user file. Everything is read at call time.
+- Uninstalling restores the prompt exactly as it was: registration goes through `ctx.effect`, so it disposes with the plugin.
+- Injection dedupes against `AGENTS.md`: if a rule's text already appears there, it is **not injected again** (reports show `N injected / M skipped`), and when the rules themselves came from `AGENTS.md` the inject layer turns itself off.
