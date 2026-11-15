@@ -63,3 +63,9 @@ lib/report.js    三值判定与渲染
 ```
 
 参见 [docs-schema.md](docs-schema.md) 与 [ALIGNMENT.md](ALIGNMENT.md)（与手写采集器的逐条对照）。
+
+## 来源与声明
+
+本包由 **AI agent（DeepSeek Harness 作为主要执行者）开发**：在本机真实运行中迭代、按失败纠正，而不是人工手写的提示词模板。它引用的方法论仓库同样如此。请把它当成起点，而不是认证。
+
+插件不内置规则手册。规则来自用户自己的 `policy.yaml`；这里提供的是 schema、谓词执行器和证据采集。
