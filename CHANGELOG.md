@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0-draft
+## 0.1.0
 
 - one policy file drives prompt injection and three-value checks
 - 9 predicate types: regex, path-boundary, field-presence, sequence-order, count-threshold, requires, turn-condition, duration, metric
