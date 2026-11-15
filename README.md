@@ -21,6 +21,16 @@ Most rule plugins inject text. Most audit plugins measure tooling. Neither answe
 
 Contract: **`unknown` is never read as `pass`** (no data source or too few samples stays `unknown`).
 
+## Install
+
+```bash
+# from GitHub (works today)
+dsh plugin --profile web add github:cengcengcai-creator/dsh-ruleset
+
+# from npm (once published)
+dsh plugin --profile web add dsh-ruleset
+```
+
 ## Status
 
 Draft, but functional: **10 of 15 rules are expressible declaratively** — no collector code per rule, only policy.
