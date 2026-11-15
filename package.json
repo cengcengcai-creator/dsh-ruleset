@@ -6,22 +6,34 @@
   "main": "./lib/index.js",
   "exports": {
     ".": "./lib/index.js",
-    "./package.json": "./package.json"
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json"
   },
   "files": [
-    "lib",
-    "schema",
-    "examples",
-    "test",
-    "docs-schema.md",
     "CHANGELOG.md",
     "LICENSE",
+    "README.md",
+    "client.js",
     "cordis.patch.yml",
-    "README.md"
+    "docs-schema.md",
+    "examples",
+    "lib",
+    "locale",
+    "schema",
+    "test"
   ],
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ]
     }
   },
   "dependencies": {
