@@ -1,0 +1,54 @@
+{
+  "name": "dsh-ruleset",
+  "version": "0.1.0-draft",
+  "type": "module",
+  "description": "Behavioral rule compliance for DeepSeek Harness: one policy file drives both prompt injection and three-value evidence checks. Audits agent behavior, not plugin quality.",
+  "main": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "schema",
+    "examples",
+    "test",
+    "docs-schema.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "agent-behavior",
+    "compliance",
+    "policy",
+    "audit"
+  ],
+  "author": "caifengmao",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cengcengcai-creator/dsh-ruleset.git"
+  },
+  "homepage": "https://github.com/cengcengcai-creator/dsh-ruleset#readme",
+  "bugs": {
+    "url": "https://github.com/cengcengcai-creator/dsh-ruleset/issues"
+  }
+}

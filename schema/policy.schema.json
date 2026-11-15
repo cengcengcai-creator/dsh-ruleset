@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dsh-ruleset policy",
+  "type": "object",
+  "required": ["version", "rules"],
+  "properties": {
+    "version": { "type": "integer" },
+    "platform": {
+      "type": "object",
+      "properties": {
+        "context_yellow_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "context_red_ratio": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "title", "text"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "kind": { "enum": ["constraint", "protocol"] },
+          "title": { "type": "string" },
+          "text": { "type": "string" },
+          "mechanism": { "enum": ["instruction", "hook", "tool"] },
+          "observe": {
+            "type": "object",
+            "required": ["metric"],
+            "properties": {
+              "metric": { "type": "string" },
+              "expect": { "type": ["integer", "string"] },
+              "window": { "type": "string" },
+              "min_samples": { "type": "integer", "minimum": 1 }
+            }
+          },
+          "evidence": { "type": "string" }
+        }
+      }
+    }
+  }
+}

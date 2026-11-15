@@ -1,0 +1,50 @@
+version: 1
+rules:
+  - id: destructive-confirm
+    kind: constraint
+    title: 破坏性命令先确认
+    text: rm/diskutil/sudo 先说清并等确认；能用 trash 不用 rm
+    observe:
+      metric: destructive_blocked
+      expect: 0
+      bind:
+        type: path-boundary
+        pattern: '(?:^|[;&|(\n])\s*rm\s+-[rf]'
+        requireApproval: true
+
+  - id: credential-safety
+    kind: constraint
+    title: 凭据不落盘
+    text: 凭据不写入文件
+    observe:
+      metric: credential_leak
+      expect: 0
+      bind:
+        type: regex
+        source: fileWrites
+        target: content
+        pattern: 'sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}'
+
+  - id: stop-loss
+    kind: protocol
+    title: 同因失败即停
+    text: 同一命令连续两次同因失败即停
+    observe:
+      metric: repeat_failure
+      expect: 0
+      bind:
+        type: count-threshold
+        consecutiveFailures: 2
+        minSamples: 3
+
+  - id: deliverable-type
+    kind: protocol
+    title: 交付物首部声明 type
+    text: "交付物首部声明 type: 调研|排查|方案"
+    observe:
+      metric: deliverable_missing_field
+      expect: 0
+      bind:
+        type: field-presence
+        ext: .md
+        fields: [type]

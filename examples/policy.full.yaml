@@ -1,0 +1,162 @@
+version: 1
+platform:
+  context_yellow_ratio: 0.4
+rules:
+  - id: outbound-confirm
+    kind: constraint
+    title: 外发先问
+    text: 邮件/发帖/上传先确认
+    observe:
+      metric: outbound_blocked
+      bind:
+        type: regex
+        source: commands
+        skeleton: true
+        excludeLocalUrl: true
+        pattern: 'curl[^;|]*\s(?:-X\s*POST|--data|-d\s|--form|-F\s|--upload-file|-T\s)|git\s+push\b|(?:^|[;&|(\n]| )scp\s|\brsync\b[^;|]*@\S+:|(?:sendmail|mail\s+-s)\b'
+        requireApproval: true
+        requireUserPermit: '(?<!不)(?:可以|同意|发吧|发给我|发过来|发过去|上传|推送|好的|行|继续|装上|装吧)'
+
+  - id: destructive-confirm
+    kind: constraint
+    title: 破坏性命令先确认
+    text: rm/diskutil/sudo 先说清并等确认
+    observe:
+      metric: destructive_blocked
+      bind:
+        type: path-boundary
+        pattern: '(?:^|[;&|(\n])\s*rm\s+-[rf]'
+        requireApproval: true
+        requireUserPermit: '(?<!不)(?:可以|同意|都做|两件事|清理|清掉|删|归档)'
+
+  - id: credential-safety
+    kind: constraint
+    title: 凭据不落盘
+    text: 凭据不写入文件
+    observe:
+      metric: credential_leak
+      bind:
+        type: regex
+        sources: [fileWrites, commands]
+        pattern: 'sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----'
+        requireWrite: true
+
+  - id: privacy-local
+    kind: constraint
+    title: 隐私不出机
+    text: 隐私数据绝不出本机
+    observe: { metric: privacy_egress }
+
+  - id: ask-when-unsure
+    kind: constraint
+    title: 拿不准先问
+    text: 拿不准时先问
+    observe: { metric: unasked_assumption }
+
+  - id: deliverable-type
+    kind: protocol
+    title: 交付物首部声明 type
+    text: "首部声明 type: 调研|排查|方案"
+    observe:
+      metric: deliverable_missing_field
+      bind:
+        type: field-presence
+        ext: .md
+        legacyDays: 7
+        excludePath: '(^|/)(\.archive|node_modules|scripts|notes|output)(/|$)|(^|/)(INDEX|README|AGENTS)\.md$'
+        fields: [type]
+
+  - id: search-first
+    kind: protocol
+    title: 排查先外部检索
+    text: 先查外部已知答案再碰本地
+    observe:
+      metric: audit_search_first_miss
+      bind:
+        type: sequence-order
+        taskPattern: '报错|错误|失败|为什么|排查|异常|崩|打不开|超时|error|fail|bug|timeout'
+        first: [web_search, web_fetch]
+        then: [read, grep, glob]
+        minSamples: 10
+
+  - id: evidence-before-conclusion
+    kind: protocol
+    title: 指不到证据不写结论
+    text: 结论必须能指回源码行号或原文
+    observe: { metric: conclusion_without_evidence }
+
+  - id: long-task-declaration
+    kind: protocol
+    title: 长任务先声明
+    text: 单轮≥12 次调用先发任务声明
+    observe: { metric: missing_declaration }
+
+  - id: task-close
+    kind: protocol
+    title: 收尾四步
+    text: 长任务结束前跑收尾命令/归档/查上下文/lint
+    observe:
+      metric: close_missed
+      bind:
+        type: turn-condition
+        ifTurnCallMin: 12
+        thenPattern: 'archive|归档|observe_report|session_projcache|context-watchdog|\blint\b'
+
+  - id: stop-loss
+    kind: protocol
+    title: 同因失败即停
+    text: 同一命令连续两次同因失败即停
+    observe:
+      metric: repeat_failure
+      bind:
+        type: count-threshold
+        consecutiveFailures: 2
+        minSamples: 3
+
+  - id: background-dispatch
+    kind: protocol
+    title: 长活后台化
+    text: 预计超 10-15 分钟后台化
+    observe:
+      metric: blocking_long_task
+      bind:
+        type: duration
+        minMinutes: 10
+
+  - id: review-grading
+    kind: protocol
+    title: 交付分级复核
+    text: 高风险交付加独立复核
+    observe:
+      metric: review_missing
+      bind:
+        type: requires
+        ifPathPattern: '评估|迁移|升级|报告|周报|PPT'
+        ifContentPattern: 'type\s*[:：]\s*调研'
+        minSamples: 1
+
+  - id: context-rotation
+    kind: protocol
+    title: 上下文到线轮换
+    text: 占用≥40% 在任务边界轮换
+    observe:
+      metric: rotation_overdue
+      bind:
+        type: metric
+        key: context_ratio
+        op: '<='
+        threshold: 0.4
+
+  - id: record-completeness
+    kind: protocol
+    title: 记录五必录
+    text: 记录含测试前提/版本指纹/对象标识/判定依据/不确定项
+    observe:
+      metric: record_field_missing
+      bind:
+        type: field-presence
+        ext: .md
+        pathPattern: '/(notes|output)/'
+        legacyDays: 7
+        excludePath: '(^|/)(\.archive|node_modules|scripts)(/|$)|(^|/)(INDEX|README)\.md$'
+        fields: [测试前提, 版本指纹, 对象标识, 判定依据, 不确定项]

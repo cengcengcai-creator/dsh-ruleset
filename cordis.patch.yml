@@ -1,0 +1,9 @@
+# dsh-ruleset bundle layer
+# 单包两用：注入（systemPrompt 段）+ 观测（observe_report 工具），共用一份 policy。
+- insert:
+    - id: dsh-ruleset
+      name: 'dsh-ruleset'
+      config:
+        policyPath: ''        # 空 = 自动探测（$DSH_RULESET_POLICY → ~/.dsh/workspace/policy.yaml）
+        injectMode: compact   # compact | full | off
+        windowHours: 720
