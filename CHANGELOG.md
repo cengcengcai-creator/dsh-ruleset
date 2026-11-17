@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1
+
+Community submissions and documentation polish.
+
+- submitted to `awesome-dsh-plugin/awesome-dsh-plugin` (plugin-market index source) and `kejixiaoliang/awesome-dsh-plugins`
+- READMEs list community submissions and the GitHub install command while npm publishing is unavailable
+
 ## 0.2.0
 
 Rule authoring and verification, end to end.

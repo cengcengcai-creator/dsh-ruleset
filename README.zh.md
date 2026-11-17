@@ -113,3 +113,16 @@ node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 条强制句 → 分
 规则体检：重复、冲突、无判据、token 成本。测试：`npm test`（20 条）。
 
 已知限制：无热插拔（改插件需重启宿主）、客户端 slot props 无法查询、模型复核仅供参照（未做 kappa 校准）。
+
+## 社区收录
+
+已提交（审核中）：
+
+1. [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/16379)——最大的精选列表，同时是插件市场索引源（分类：`security`）
+2. [kejixiaoliang/awesome-dsh-plugins](https://github.com/kejixiaoliang/awesome-dsh-plugins/pull/223)——分类：健康检查 / 诊断 / 审计
+
+暂未发布到 npm，发布前请用 GitHub 直装：
+
+```bash
+dsh plugin --profile web add github:cengcengcai-creator/dsh-ruleset
+```

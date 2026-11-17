@@ -51,3 +51,16 @@ Rule hygiene (`/api/dsh-ruleset/hygiene`): duplicates, conflicts, rules without 
 Tests: `npm test` — 20 cases (validation, predicates, extraction, dedupe, plugin-load smoke, guard behaviour).
 
 Known limits: no hot reload (host restart required), client-side slot props are not inspectable, model judging is advisory only (not calibrated with kappa yet).
+
+## Community listings
+
+Submitted (review pending):
+
+1. [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/16379) — the large curated list that also serves as a plugin-market index (category: `security`)
+2. [kejixiaoliang/awesome-dsh-plugins](https://github.com/kejixiaoliang/awesome-dsh-plugins/pull/223) — category: health checks / diagnostics / audit
+
+Not on npm yet; install from GitHub until it is:
+
+```bash
+dsh plugin --profile web add github:cengcengcai-creator/dsh-ruleset
+```
