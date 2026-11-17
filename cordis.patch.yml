@@ -5,5 +5,6 @@
       name: 'dsh-ruleset'
       config:
         policyPath: ''        # 空 = 自动探测（$DSH_RULESET_POLICY → ~/.dsh/workspace/policy.yaml）
-        injectMode: compact   # compact | full | off
+        guardEnabled: true
+        injectMode: off       # compact | full | off（同时装 dsh-standards 时保持 off，避免重复注入）
         windowHours: 720

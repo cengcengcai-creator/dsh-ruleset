@@ -51,7 +51,7 @@ Draft, but functional: **10 of 15 rules are expressible declaratively** — no c
 lib/index.js     wiring (inject + tool)
 lib/policy.js    loader + mtime watch
 lib/inject.js    system prompt section
-lib/observe.js   observe_report tool
+lib/observe.js   ruleset_audit tool
 lib/report.js    collectors + three-value evaluation
 schema/          policy JSON Schema
 examples/        example policy
@@ -89,5 +89,5 @@ A starter pack with 5 mechanically checkable rules ships in `examples/policy.sta
 
 ## Tools
 
-- `observe_report` — three-value report over the last N hours; also writes `.ruleset/report.json` (plugin state, not a user file) for UIs or external readers.
+- `ruleset_audit` — three-value report over the last N hours; also writes `.ruleset/report.json` (plugin state, not a user file) for UIs or external readers.
 - `ruleset_init` — on explicit request only: extracts `AGENTS.md` into `.ruleset/policy.draft.yaml`. It never touches the real `policy.yaml` and refuses to overwrite an existing draft without `overwrite: true`.

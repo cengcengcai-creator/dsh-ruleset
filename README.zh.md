@@ -56,7 +56,7 @@ dsh plugin --profile web add dsh-ruleset
 lib/index.js     接线
 lib/policy.js    读取 + 校验 + mtime 热更
 lib/inject.js    系统提示词段
-lib/observe.js   observe_report 工具
+lib/observe.js   ruleset_audit 工具
 lib/facts.js     平台事实流（命令/审批/写入/子代理/作业/指标）
 lib/predicates.js 九类谓词执行器
 lib/report.js    三值判定与渲染
@@ -96,5 +96,5 @@ node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 条强制句 → 分
 
 ## 工具
 
-- `observe_report` — 输出最近 N 小时的三值报告，同时写一份 `.ruleset/report.json`（插件自有状态，不是用户文件），供 UI 或外部读取。
+- `ruleset_audit` — 输出最近 N 小时的三值报告，同时写一份 `.ruleset/report.json`（插件自有状态，不是用户文件），供 UI 或外部读取。
 - `ruleset_init` — 仅在你明确要求时：把 `AGENTS.md` 抽取成 `.ruleset/policy.draft.yaml`。永不触碰正式 `policy.yaml`；草稿已存在时需 `overwrite: true` 才覆盖。
