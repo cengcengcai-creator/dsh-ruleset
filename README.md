@@ -33,61 +33,21 @@ dsh plugin --profile web add dsh-ruleset
 
 ## Status
 
-Draft, but functional: **10 of 15 rules are expressible declaratively** — no collector code per rule, only policy.
+Functional, self-hosted, no npm account needed — install straight from GitHub.
 
-- Alignment against a hand-written collector set: 8 rules identical, 2 differ only in evidence granularity (chat-level approvals, review scope). See `ALIGNMENT.md`.
-- Policy is validated on load (`lib/validate.js`, zero dependency). Invalid policy → `null` → every rule reports `unknown`; it never falls back to some other policy.
-- Tests: `npm test` (12 cases: validation + predicates).
+What it does today:
 
-## Contract
+1. **Write rules in one sentence** — a model turns it into a predicate you can adjust (`/api/dsh-ruleset/parse`, deterministic fallback included).
+2. **Three tiers** — redline / hard / soft, injected in that order so hard rules are not buried.
+3. **Judge behaviour** — 15 predicate types over native DSH events (approvals, sandbox modes, jobs, turns, file writes), never regex-guessing what the platform already records.
+4. **Gate red lines** — a `tools/pre-execute` guard returns `ask` for `sudo`, `chmod 777`, `curl | sh`, system-path writes, credential-shaped strings. Hits are logged to `.ruleset/guard.log`.
+5. **Keep findings honest** — per-finding lifecycle (`open/fixed/accepted/false_positive/superseded`), false positives subtract from hit counts and are never deleted.
+6. **Compare against a baseline** — two-proportion z-test (ported from OpenClaw's `audit-verdict.py`); `|z| < 1.96` is reported as "no meaningful change" instead of red.
+7. **Verify what reached the model** — every distinct injected rule text is fingerprinted into `.ruleset/injected.log`.
+8. **Own nothing** — `AGENTS.md` is read-only; `policy.yaml` is written only on explicit user action, always after a backup; one-click rollback and export are built in.
 
-- `unknown` is never read as `pass`
-- `expect: 0` rules: scanned samples with zero hits = `pass`; no samples = `unknown`
-- Every verdict carries evidence (`seq`, file path) or explicitly says why it has none
+Rule hygiene (`/api/dsh-ruleset/hygiene`): duplicates, conflicts, rules without predicates, token cost.
 
-## Layout
+Tests: `npm test` — 20 cases (validation, predicates, extraction, dedupe, plugin-load smoke, guard behaviour).
 
-```
-lib/index.js     wiring (inject + tool)
-lib/policy.js    loader + mtime watch
-lib/inject.js    system prompt section
-lib/observe.js   ruleset_audit tool
-lib/report.js    collectors + three-value evaluation
-schema/          policy JSON Schema
-examples/        example policy
-```
-
-## Origin / disclosure
-
-This package was **developed by an AI agent** (DeepSeek Harness running as the primary actor), through real operation and correction against failures on one machine — not hand-authored as a prompt template. The same applies to the methodology repo it references. Use it as a starting point, not a certification.
-
-The plugin does not ship a rulebook. The rules are the user's own `policy.yaml`; what ships here is the schema, the predicate executor and the evidence collection.
-
-
-## If you only have AGENTS.md
-
-Most people grow rules in `AGENTS.md` through conversation, not by writing a spec. The plugin handles that:
-
-1. If `policy.yaml` exists → used as-is.
-2. If it does not, but `AGENTS.md` does → rules are **extracted automatically as a draft**: injected into the prompt, but **never judged** (every rule reports `unknown` with "draft unconfirmed").
-3. Neither → nothing is judged; the report says "no rule source" instead of guessing.
-
-Promote a draft to real rules:
-
-```bash
-node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 forced clauses → classified draft
-# delete what you do not want, add observe.bind to the few that matter, rename to policy.yaml
-```
-
-A starter pack with 5 mechanically checkable rules ships in `examples/policy.starter.yaml`.
-
-## Pluggable by design
-
-- The plugin **never writes** to `AGENTS.md`, `policy.yaml`, or any user file. Everything is read at call time.
-- Uninstalling restores the prompt exactly as it was: registration goes through `ctx.effect`, so it disposes with the plugin.
-- Injection dedupes against `AGENTS.md`: if a rule's text already appears there, it is **not injected again** (reports show `N injected / M skipped`), and when the rules themselves came from `AGENTS.md` the inject layer turns itself off.
-
-## Tools
-
-- `ruleset_audit` — three-value report over the last N hours; also writes `.ruleset/report.json` (plugin state, not a user file) for UIs or external readers.
-- `ruleset_init` — on explicit request only: extracts `AGENTS.md` into `.ruleset/policy.draft.yaml`. It never touches the real `policy.yaml` and refuses to overwrite an existing draft without `overwrite: true`.
+Known limits: no hot reload (host restart required), client-side slot props are not inspectable, model judging is advisory only (not calibrated with kappa yet).

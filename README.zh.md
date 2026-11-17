@@ -98,3 +98,18 @@ node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 条强制句 → 分
 
 - `ruleset_audit` — 输出最近 N 小时的三值报告，同时写一份 `.ruleset/report.json`（插件自有状态，不是用户文件），供 UI 或外部读取。
 - `ruleset_init` — 仅在你明确要求时：把 `AGENTS.md` 抽取成 `.ruleset/policy.draft.yaml`。永不触碰正式 `policy.yaml`；草稿已存在时需 `overwrite: true` 才覆盖。
+
+## 现在的功能（2026-11）
+
+1. **一句话写规则**：模型拆成判据，可手调；模型不可用时走确定性兜底
+2. **三档分级**：红线 / 硬约束 / 软规则，注入按此顺序，硬规则不会被埋
+3. **判行为**：15 类判据，优先用 DSH 原生事件（审批、沙箱模式、后台任务、轮次、写入），不拿正则猜平台已有的事实
+4. **拦红线**：`tools/pre-execute` 守卫对 `sudo`、`chmod 777`、`curl | sh`、系统目录写入、凭据形态返回 `ask`，命中记入 `.ruleset/guard.log`
+5. **发现可维护**：每条发现可标 误报/已修/接受，误报从命中里扣减且永不删除；7 天后自动 supersede
+6. **与基线比**：两比例 z 检验（移植自 OpenClaw 的 `audit-verdict.py`），`|z|<1.96` 显示「无明显变化」而不是飘红
+7. **注入可核**：每次真正注入的规则文本都会留指纹（`.ruleset/injected.log`）
+8. **不拥有你的规则**：`AGENTS.md` 只读；`policy.yaml` 只在显式操作时写，写前自动备份，支持一键回滚与导出
+
+规则体检：重复、冲突、无判据、token 成本。测试：`npm test`（20 条）。
+
+已知限制：无热插拔（改插件需重启宿主）、客户端 slot props 无法查询、模型复核仅供参照（未做 kappa 校准）。
