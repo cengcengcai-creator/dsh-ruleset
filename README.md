@@ -54,10 +54,13 @@ Known limits: no hot reload (host restart required), client-side slot props are 
 
 ## Community listings
 
-Submitted (review pending):
+Listed:
 
-1. [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/16379) — the large curated list that also serves as a plugin-market index (category: `security`)
-2. [kejixiaoliang/awesome-dsh-plugins](https://github.com/kejixiaoliang/awesome-dsh-plugins/pull/223) — category: health checks / diagnostics / audit
+1. **Included** — [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) under *Security & Permissions* (merged 2026-11-18 via [PR #16379](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/16379)); this list also powers the in-app plugin market index.
+
+Pending review:
+
+1. [kejixiaoliang/awesome-dsh-plugins](https://github.com/kejixiaoliang/awesome-dsh-plugins/pull/223) — health checks / diagnostics / audit category
 
 Not on npm yet; install from GitHub until it is:
 

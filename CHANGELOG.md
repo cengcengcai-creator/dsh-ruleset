@@ -2,7 +2,9 @@
 
 ## 0.2.1
 
-Community submissions and documentation polish.
+Community listing and documentation polish.
+
+- **listed** in `awesome-dsh-plugin/awesome-dsh-plugin` under Security & Permissions (merged 2026-11-18, PR #16379)
 
 - submitted to `awesome-dsh-plugin/awesome-dsh-plugin` (plugin-market index source) and `kejixiaoliang/awesome-dsh-plugins`
 - READMEs list community submissions and the GitHub install command while npm publishing is unavailable

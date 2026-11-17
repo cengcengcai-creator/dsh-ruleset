@@ -116,10 +116,13 @@ node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 条强制句 → 分
 
 ## 社区收录
 
-已提交（审核中）：
+已收录：
 
-1. [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/16379)——最大的精选列表，同时是插件市场索引源（分类：`security`）
-2. [kejixiaoliang/awesome-dsh-plugins](https://github.com/kejixiaoliang/awesome-dsh-plugins/pull/223)——分类：健康检查 / 诊断 / 审计
+1. **[awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)** ——“Security & Permissions”分类（2026-11-18 合并，[PR #16379](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/16379)）；该列表同时是应用内插件市场的索引源
+
+审核中：
+
+1. [kejixiaoliang/awesome-dsh-plugins](https://github.com/kejixiaoliang/awesome-dsh-plugins/pull/223)——健康检查 / 诊断 / 审计分类
 
 暂未发布到 npm，发布前请用 GitHub 直装：
 
