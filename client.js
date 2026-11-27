@@ -134,6 +134,7 @@ window.__ModuleLoader__.load({
       const rate = row.base ? Math.round(((row.hits || 0) / row.base) * 100) : null
       return h('div', {
         draggable: true,
+        title: '可以拖到其他栏改变分级；点一下展开详情',
         onDragStart: (e) => { try { e.dataTransfer.setData('text/plain', row.id); e.dataTransfer.effectAllowed = 'move' } catch { /* ignore */ } },
         onClick: onToggle,
         onMouseEnter: () => setHover(true),
@@ -169,7 +170,7 @@ window.__ModuleLoader__.load({
           }, pending ? '确认删除?' : '×')),
         h('div', { style: { display: 'flex', alignItems: 'flex-end', gap: 8, marginTop: 6 } },
           h('span', { style: { fontSize: 20, fontWeight: 600, lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' } }, rate === null ? '–' : `${rate}%`),
-          h('span', { style: { fontSize: T.micro, color: C.muted, paddingBottom: 2 } }, row.base ? `${row.hits}/${row.base}` : '无样本'),
+          h('span', { style: { fontSize: T.micro, color: C.muted, paddingBottom: 2 } }, row.base ? `命中 ${row.hits} / 样本 ${row.base}` : '窗口内无样本'),
           row.z !== undefined ? h('span', {
             style: { fontSize: T.micro, paddingBottom: 2, color: row.z < -1.96 ? C.violation : row.z > 1.96 ? C.pass : C.muted },
           }, row.z < -1.96 ? `比基线明显变差（强度 ${Math.abs(row.z)}）` : row.z > 1.96 ? `比基线明显变好（强度 ${row.z}）` : `与基线无明显变化（强度 ${Math.abs(row.z)}）`) : null,
@@ -737,6 +738,14 @@ window.__ModuleLoader__.load({
         err ? h('div', { style: { color: C.violation, marginBottom: 10, fontSize: 12 } }, err) : null,
         sugg && sugg.length ? h('div', { style: { border: `1px solid ${C.line}`, borderRadius: RAD.card, padding: 10, marginBottom: 10, background: 'rgba(255,255,255,0.5)' } },
           h('div', { style: { fontSize: T.label, color: C.muted, marginBottom: 6 } }, `体检：${sugg.length} 条规则没有机械判据`),
+          hyg ? h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 8 } },
+            [
+              ['可判 / 半可判 / 不可判', `${hyg.evidence?.ok ?? '-'} / ${hyg.evidence?.weak ?? '-'} / ${hyg.evidence?.none ?? '-'}`],
+              ['判据覆盖率', `${Math.round((hyg.coverage?.rate || 0) * 100)}%（红线 ${hyg.coverage?.byTier?.redline?.withBind ?? 0}/${hyg.coverage?.byTier?.redline?.total ?? 0}）`],
+              ['本窗口判定率', `${Math.round((data?.summary?.judgeRate || 0) * 100)}%`],
+            ].map(([label, val]) => h('div', { key: label, style: { border: `1px solid ${C.line}`, borderRadius: 8, padding: '6px 8px', background: 'rgba(255,255,255,0.6)' } },
+              h('div', { style: { fontSize: 9, color: C.muted } }, label),
+              h('div', { style: { fontSize: 13, fontWeight: 600 } }, val)))) : null,
           hyg ? h('div', { style: { fontSize: 10, color: C.muted, marginBottom: 6 } },
             `规则 ${hyg.total} 条 · 约 ${hyg.estimatedTokens} tokens · 重复 ${hyg.dupes.length} 组 · 冲突 ${(hyg.conflicts || []).length} 组 · 无判据 ${hyg.noBind.length} 条` +
             (hyg.cost[0] ? ` · 最长 ${hyg.cost[0].id}(${hyg.cost[0].chars} 字)` : '')) : null,

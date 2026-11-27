@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0
+
+Governance metrics and a friendlier panel.
+
+- ported OpenClaw's 2026-11-24 long-task revision: `declare-first` (declare a plan before work; short-task exemption requires single action + no external fetch + ≤2 calls) replaces the post-hoc `≥12 calls / ≥180s` gate, which could not be evaluated at start
+- new `phase-gap`: a turn that runs longer than 30 minutes with no assistant output counts as silent progress
+- bind coverage (overall + per tier) and evidence-ability (can this predicate point back to a seq or path?) reported in the health check
+- panel: three-tier governance summary (judgeable / partial / not judgeable), first-run guide, drag hint, and "hit / sample" wording instead of a bare fraction
+
 ## 0.2.3
 
 - README badges (npm version / weekly downloads / license / CI); dropped the "(draft)" label
