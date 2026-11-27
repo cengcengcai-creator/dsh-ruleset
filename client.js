@@ -372,6 +372,19 @@ window.__ModuleLoader__.load({
           style: { ...input, resize: 'vertical', padding: 8 },
         }),
         loading ? h('div', { style: { fontSize: 11, color: C.muted, marginTop: 6 } }, '正在理解这句话…') : null,
+        (() => {
+          const t = text.trim()
+          if (!t) return null
+          const tips = []
+          if (t.length < 8) tips.push('太短：写清「什么情况下必须/禁止做什么」')
+          if (!/必须|不得|应|需要|禁止/.test(t)) tips.push('缺强制性词：建议用「必须 / 不得 / 应」')
+          if (/\d+\s*(次|秒|分钟)/.test(t) && !/实测|校准|来源/.test(t)) tips.push('有数字但没写来源：补「阈值来自实测」')
+          if (!/文件|命令|轮次|会话|记录|路径/.test(t)) tips.push('没写审计对象：补「命令 / 文件 / 轮次 / 记录」')
+          if (!/豁免|例外|除非|短任务/.test(t)) tips.push('没写豁免：补「豁免条件 + 须说明理由」')
+          return tips.length ? h('div', { style: { marginTop: 6, fontSize: 10, color: C.muted, lineHeight: 1.6 } },
+            h('div', { style: { fontWeight: 600 } }, '格式建议（实时）'),
+            tips.map((x, i) => h('div', { key: i }, `· ${x}`))) : h('div', { style: { marginTop: 6, fontSize: 10, color: C.pass } }, '格式看起来完整')
+        })(),
         ask && !alts.length ? h('div', { style: { fontSize: 11, color: C.violation, marginTop: 6 } }, `需要你确认：${ask}`) : null,
         bind ? h('div', { style: { marginTop: 8, borderTop: `1px solid ${C.line}`, paddingTop: 8 } },
           h('div', { style: { fontSize: T.micro, letterSpacing: '0.05em', textTransform: 'uppercase', color: C.muted } }, '模型选择的判定方式'),
@@ -531,6 +544,26 @@ window.__ModuleLoader__.load({
       )
     }
 
+    const AdviceBlock = ({ advice, onApplied, onError }) => {
+      const color = (lv) => (lv === 'error' ? C.violation : lv === 'warn' ? C.warn : C.muted)
+      return h('div', { style: { border: `1px solid ${C.line}`, borderRadius: RAD.card, padding: 10, marginBottom: 10, background: 'rgba(255,255,255,0.5)' } },
+        h('div', { style: { fontSize: T.label, color: C.muted, marginBottom: 6 } },
+          `规则建议：${advice.summary.rulesWithAdvice}/${advice.summary.rules} 条可改进（必改 ${advice.summary.error} · 建议改 ${advice.summary.warn} · 参考 ${advice.summary.info}）`),
+        advice.items.map((it) => h('div', { key: it.id, style: { padding: '4px 0', borderTop: `1px dashed ${C.line}` } },
+          h('div', { style: { fontSize: 11, fontWeight: 600 } }, it.title || it.id),
+          it.suggestions.map((sg, i) => h('div', { key: i, style: { display: 'flex', gap: 6, alignItems: 'baseline', fontSize: 10.5, padding: '2px 0' } },
+            h('span', { style: { flex: '0 0 auto', fontSize: 9, padding: '0 6px', borderRadius: 999, border: `1px solid ${color(sg.level)}`, color: color(sg.level) } }, sg.code),
+            h('span', { style: { flex: 1, color: C.text } }, sg.say),
+            h('span', { style: { flex: 1, color: C.muted } }, sg.fix),
+            sg.action ? h('button', {
+              onClick: async () => {
+                const r = await call('api/dsh-ruleset/apply-advice', { id: it.id, action: sg.action })
+                if (r.ok) { onApplied() } else { onError(r.error?.message || '采纳失败') }
+              },
+              style: { flex: '0 0 auto', fontSize: 9, padding: '1px 8px', borderRadius: 999, border: `1px solid ${C.accent}66`, background: 'transparent', color: C.accent, cursor: 'pointer' },
+            }, '一键采纳') : null)))))
+    }
+
     function PanelIcon({ size = 16 }) {
       return h('svg', { width: size, height: size, viewBox: '0 0 16 16', 'aria-hidden': true },
         h('rect', { x: 2, y: 2, width: 12, height: 12, rx: 2, fill: 'none', stroke: 'currentColor', strokeWidth: 1.4 }),
@@ -548,6 +581,7 @@ window.__ModuleLoader__.load({
       const [judge, setJudge] = React.useState(null)
       const [sugg, setSugg] = React.useState(null)
       const [hyg, setHyg] = React.useState(null)
+      const [advice, setAdvice] = React.useState(null)
       const [showGuard, setShowGuard] = React.useState(false)
       const [showBackups, setShowBackups] = React.useState(false)
       const [backups, setBackups] = React.useState([])
@@ -666,6 +700,13 @@ window.__ModuleLoader__.load({
             }, '规则体检'),
             h('button', {
               onClick: async () => {
+                try { const r = await call('api/dsh-ruleset/advise'); if (r.ok) setAdvice(r.value) } catch { /* ignore */ }
+              },
+              title: '按「判据要能在开工时可求值」等方法，对每条规则给改进建议',
+              style: { fontSize: 10, padding: '3px 9px', borderRadius: 999, border: `1px solid ${C.line}`, background: 'transparent', color: C.muted, cursor: 'pointer' },
+            }, '规则建议'),
+            h('button', {
+              onClick: async () => {
                 try {
                   const r = await call('api/dsh-ruleset/baseline', { window_hours: rangeH })
                   if (r.ok) { setErr(''); call('api/dsh-ruleset/baseline', { action: 'get' }).then((x) => { if (x.ok) setBase(x.value) }); audit(rangeH) } else setErr('建基线失败')
@@ -735,7 +776,13 @@ window.__ModuleLoader__.load({
                 },
                 style: { fontSize: 10, padding: '1px 8px', borderRadius: 6, border: `1px solid ${C.line}`, background: 'transparent', color: 'inherit', cursor: 'pointer' },
               }, '回滚到此')))) : null,
+        data?.loadError ? h('div', { style: { border: `1px solid ${C.violation}`, borderRadius: RAD.card, padding: 10, marginBottom: 10, background: 'rgba(255,46,99,0.06)', fontSize: 11, color: C.violation } },
+          h('div', { style: { fontWeight: 600 } }, '规则没加载成功（这解释为什么没有卡片）'),
+          h('div', { style: { marginTop: 4, opacity: 0.9 } }, `${data.loadError.file || ''}`),
+          h('div', { style: { marginTop: 2, fontFamily: 'ui-monospace, monospace', fontSize: 10 } }, String(data.loadError.message || '').slice(0, 300)),
+          h('div', { style: { marginTop: 4, color: C.muted } }, '常见原因：policy 用了当前运行代码不认识的判据类型（插件更新后需要重启宿主）')) : null,
         err ? h('div', { style: { color: C.violation, marginBottom: 10, fontSize: 12 } }, err) : null,
+        advice ? h(AdviceBlock, { advice, onApplied: async () => { const r = await call('api/dsh-ruleset/advise'); if (r.ok) setAdvice(r.value); audit(rangeH) }, onError: (m) => setErr(m) }) : null,
         sugg && sugg.length ? h('div', { style: { border: `1px solid ${C.line}`, borderRadius: RAD.card, padding: 10, marginBottom: 10, background: 'rgba(255,255,255,0.5)' } },
           h('div', { style: { fontSize: T.label, color: C.muted, marginBottom: 6 } }, `体检：${sugg.length} 条规则没有机械判据`),
           hyg ? h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 8 } },

@@ -55,7 +55,9 @@ What it does today:
 7. **Verify what reached the model** — every distinct injected rule text is fingerprinted into `.ruleset/injected.log`.
 8. **Own nothing** — `AGENTS.md` is read-only; `policy.yaml` is written only on explicit user action, always after a backup; one-click rollback and export are built in.
 
-Rule hygiene (`/api/dsh-ruleset/hygiene`): duplicates, conflicts, rules without predicates, token cost.
+Rule hygiene (`/api/dsh-ruleset/hygiene`): duplicates, conflicts, rules without predicates, token cost, bind coverage per tier.
+
+Rule advice (`ruleset_advice`): checks that a predicate can be evaluated *before* work starts (not after the turn ends), that exemptions are written down, that the audited object is scoped, and that numbers have a provenance — every suggestion can be adopted in one click. The new-rule form gives the same hints live while you type.
 
 Tests: `npm test` — 20 cases (validation, predicates, extraction, dedupe, plugin-load smoke, guard behaviour).
 

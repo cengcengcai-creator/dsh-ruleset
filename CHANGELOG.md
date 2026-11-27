@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.1
+
+Rule-authoring advice, and no more silent empty rule sets.
+
+- `ruleset_advice` + `/api/dsh-ruleset/advise`: for every rule, checks whether the predicate can be evaluated **before** work starts (the long-task lesson), whether exemptions are written down, whether the audited object is scoped, and whether thresholds have a provenance
+- tier advice: suggests redline / hard / soft with a reason
+- one-click adopt per suggestion (`/api/dsh-ruleset/apply-advice`): append exemption text, add scope patterns, swap post-hoc predicates for `declare-first`, fill missing metric keys, or re-tier the rule
+- new-rule form shows live writing hints (length, mandatory wording, threshold provenance, audited object, exemptions)
+- policy load failures are no longer silent: reason goes to `.ruleset/load-error.log` and the panel shows which rule and which unknown predicate failed, instead of rendering zero cards
+
 ## 0.3.0
 
 Governance metrics and a friendlier panel.
