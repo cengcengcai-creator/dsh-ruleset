@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3
+
+- README badges (npm version / weekly downloads / license / CI); dropped the "(draft)" label
+
 ## 0.2.2
 
 - published to npm: `dsh plugin add dsh-ruleset`

@@ -1,6 +1,6 @@
 {
   "name": "dsh-ruleset",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "type": "module",
   "description": "Behavioral rule compliance for DeepSeek Harness: one policy file drives both prompt injection and three-value evidence checks. Audits agent behavior, not plugin quality.",
   "main": "./lib/index.js",

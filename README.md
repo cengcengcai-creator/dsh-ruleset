@@ -1,4 +1,13 @@
-# dsh-ruleset (draft)
+<div align="center">
+
+[![npm version](https://img.shields.io/npm/v/dsh-ruleset.svg)](https://www.npmjs.com/package/dsh-ruleset)
+[![npm downloads](https://img.shields.io/npm/dw/dsh-ruleset.svg)](https://www.npmjs.com/package/dsh-ruleset)
+[![license](https://img.shields.io/npm/l/dsh-ruleset.svg)](LICENSE)
+[![test](https://github.com/cengcengcai-creator/dsh-ruleset/actions/workflows/test.yml/badge.svg)](https://github.com/cengcengcai-creator/dsh-ruleset/actions/workflows/test.yml)
+
+</div>
+
+# dsh-ruleset
 
 **Behavioral rule compliance for DSH — one policy file drives both prompt injection and evidence-backed three-value checks.**
 

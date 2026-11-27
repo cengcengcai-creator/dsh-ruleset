@@ -1,4 +1,13 @@
-# dsh-ruleset（草稿）
+<div align="center">
+
+[![npm 版本](https://img.shields.io/npm/v/dsh-ruleset.svg)](https://www.npmjs.com/package/dsh-ruleset)
+[![npm 周下载](https://img.shields.io/npm/dw/dsh-ruleset.svg)](https://www.npmjs.com/package/dsh-ruleset)
+[![许可证](https://img.shields.io/npm/l/dsh-ruleset.svg)](LICENSE)
+[![测试](https://github.com/cengcengcai-creator/dsh-ruleset/actions/workflows/test.yml/badge.svg)](https://github.com/cengcengcai-creator/dsh-ruleset/actions/workflows/test.yml)
+
+</div>
+
+# dsh-ruleset
 
 **把工作纪律变成可观测证据：一份 policy 同时驱动提示词注入与三值判定。**
 
