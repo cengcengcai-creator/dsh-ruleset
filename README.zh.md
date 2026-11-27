@@ -124,8 +124,8 @@ node scripts/extract.mjs AGENTS.md policy.draft.yaml   # 82 条强制句 → 分
 
 1. [kejixiaoliang/awesome-dsh-plugins](https://github.com/kejixiaoliang/awesome-dsh-plugins/pull/223)——健康检查 / 诊断 / 审计分类
 
-暂未发布到 npm，发布前请用 GitHub 直装：
+已发布到 npm：[`dsh-ruleset`](https://www.npmjs.com/package/dsh-ruleset)：
 
 ```bash
-dsh plugin --profile web add github:cengcengcai-creator/dsh-ruleset
+dsh plugin --profile web add dsh-ruleset
 ```

@@ -24,11 +24,11 @@ Contract: **`unknown` is never read as `pass`** (no data source or too few sampl
 ## Install
 
 ```bash
-# from GitHub (works today)
-dsh plugin --profile web add github:cengcengcai-creator/dsh-ruleset
-
-# from npm (once published)
+# from npm
 dsh plugin --profile web add dsh-ruleset
+
+# or straight from GitHub
+dsh plugin --profile web add github:cengcengcai-creator/dsh-ruleset
 ```
 
 ## Status
@@ -62,8 +62,4 @@ Pending review:
 
 1. [kejixiaoliang/awesome-dsh-plugins](https://github.com/kejixiaoliang/awesome-dsh-plugins/pull/223) — health checks / diagnostics / audit category
 
-Not on npm yet; install from GitHub until it is:
-
-```bash
-dsh plugin --profile web add github:cengcengcai-creator/dsh-ruleset
-```
+Published on npm: [`dsh-ruleset`](https://www.npmjs.com/package/dsh-ruleset).

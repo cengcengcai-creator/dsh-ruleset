@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2
+
+- published to npm: `dsh plugin add dsh-ruleset`
+- ships `docs/PREDICATE-PLAYBOOK.md` and `DEVELOPMENT.md` in the tarball
+
 ## 0.2.1
 
 Community listing and documentation polish.
